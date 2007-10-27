@@ -228,6 +228,7 @@ public class Pathfinder
 	 */
 	public List<Point> findPath(IPathHelper helper, Point start, Point goal) 
 	{
+		closedNodes = new Hashtable<Point,Node>();
 		this.helper = helper;
 		long startTime= System.nanoTime();
 		this.steps = 0;
@@ -238,7 +239,6 @@ public class Pathfinder
 			//Set up variables
 			this.start = start;
 			this.goal = goal;
-			closedNodes = new Hashtable<Point,Node>();
 			openNodes = new PriorityQueue<Node>();			 
 			tieBreaker = calculateTieBreaker(start, goal);
 			//Calculating path
