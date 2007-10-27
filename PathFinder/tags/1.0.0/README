@@ -1,0 +1,9 @@
+A* PathFinder v 1.0.0
+------------------------------------------------------------------
+
+A Java implementation of A* algorithm for roguelike games which
+use java.awt.Point as coordinates.
+
+For documentation see doc/index.html
+
+If you have any questions please email author.
