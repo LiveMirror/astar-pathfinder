@@ -43,8 +43,10 @@ import pathfinder.heuristics.IHeuristic;
  */
 public class Pathfinder 
 {	
+	/** reference to the helper class */
 	private IPathHelper helper;
 	
+	/** total time it took algorithm to calculate the path */
 	private long elapsedTime = 0;
 	
 	private IHeuristic heuristic = new DiagonalNotEqual();	
@@ -63,8 +65,14 @@ public class Pathfinder
 
 	private int steps = 0;
 
+	/**
+	 * Inner node class, stores information for a priority queue.
+	 * Total value of the node is <code>gVal + hVal<code> where:<br>
+	 * <code>gVal</code> is a total cost of movements from <b>start</b> to this point<br>
+	 * <code>hVal</code> is an estimate of cost of movements from this point to the <b>goal</b> 
+	 */
 	private class Node implements Comparable<Node>
-{
+	{
 		private static final double EPSILON = 0.000001;
 
 		Node prev = null;
@@ -80,6 +88,14 @@ public class Pathfinder
 			this.coord = p;
 		}
 
+		/**
+		 * Compares the combined value of this node, to the other node.
+		 * @param o - node to compare to
+		 * @return 1 if (this.gVal+this.hVal)>(o.gVal+o.hVal)<br>
+		 * 0 if (this.gVal+this.hVal)==(o.gVal+o.hVal)<br>
+		 * -1 if (this.gVal+this.hVal)<(o.gVal+o.hVal)
+		 * @see equals
+		 */
 		public int compareTo(Node o) 
 		{
 			double difference = this.gVal + this.hVal - o.gVal - o.hVal;
@@ -87,6 +103,10 @@ public class Pathfinder
 			return (int) Math.signum(difference);
 		}
 
+		/**
+		 * @return true if other nodes coordinates are the same as this node's coordinates
+		 * @see compareTo
+		 */
 		public boolean equals(Object obj)
 		{
 			if (coord.equals(((Node)obj).coord))
@@ -121,7 +141,7 @@ public class Pathfinder
 
 	/**
 	 * This function back tracks the path from the <code>node</node> and creates the list of
-	 * points which are conected and create most optimal path from <b>start</b> to the <b>goal</b> 
+	 * points which are conected and create the most optimal path from <b>start</b> to the <b>goal</b> 
 	 * @param node end node that has to be backtracked
 	 * @return list of the points
 	 */
