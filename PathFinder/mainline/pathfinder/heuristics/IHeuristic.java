@@ -24,8 +24,9 @@ import java.awt.Point;
 /**
  * General interface for Heuristic funtion
  * @author Egor Tsinko
+ * @param <T> type of the point. Must extend java.awt.Point
  */
-public interface IHeuristic 
+public interface IHeuristic<T extends Point> 
 {
 	/** 
 	 * Calculates heuristic estimate of the minimal cost to reach the <b>goal</b>
@@ -35,5 +36,5 @@ public interface IHeuristic
 	 * @param goal goal point
 	 * @return calculated minimal cost to reach goal
 	 */
-	public float calculateHeuristic(Point start, Point goal);
+	public float calculateHeuristic(T start, T goal);
 }

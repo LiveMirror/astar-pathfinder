@@ -27,11 +27,12 @@ import java.awt.Point;
  * It returns the sum of horizontal and vertical movements required to get from
  * the start point to the goal point.
  * @author Egor Tsinko
+ * @param <T> type of the point. Must extend java.awt.Point
  */
-public class ManhattanHeuristic implements IHeuristic 
+public class ManhattanHeuristic<T extends Point> implements IHeuristic<T> 
 {
 
-	public float calculateHeuristic(Point start, Point goal) 
+	public float calculateHeuristic(T start, T goal) 
 	{	
 		return Math.abs(start.x-goal.x)+Math.abs(start.y-goal.y);
 	}

@@ -39,29 +39,30 @@ import pathfinder.heuristics.IHeuristic;
  * 
  * @author Egor Tsinko
  * @version 1.0.0
+ * @param <T> type of the point. Must extend java.awt.Point
  *
  */
-public class Pathfinder 
+public class Pathfinder<T extends Point>
 {	
 	/** reference to the helper class */
-	private IPathHelper helper;
+	private IPathHelper<T> helper;
 	
 	/** total time it took algorithm to calculate the path */
 	private long elapsedTime = 0;
 	
-	private IHeuristic heuristic = new DiagonalNotEqual();	
+	private IHeuristic<T> heuristic = new DiagonalNotEqual<T>();	
 
 	private double scale = 1.0;
 
 	private double tieBreaker = 1.0;
 
-	private Point start;
+	private T start;
 
-	private Point goal;
+	private T goal;
 
-	private Hashtable<Point,Node> closedNodes;
+	private Hashtable<T,Node<T>> closedNodes;
 
-	private PriorityQueue<Node> openNodes;
+	private PriorityQueue<Node<T>> openNodes;
 
 	private int steps = 0;
 
@@ -71,19 +72,19 @@ public class Pathfinder
 	 * <code>gVal</code> is a total cost of movements from <b>start</b> to this point<br>
 	 * <code>hVal</code> is an estimate of cost of movements from this point to the <b>goal</b> 
 	 */
-	private class Node implements Comparable<Node>
+	private class Node<U extends Point> implements Comparable<Node<U>>
 	{
 		private static final double EPSILON = 0.000001;
 
-		Node prev = null;
+		Node<U>prev = null;
 
-		Point coord;
+		U coord;
 
 		double gVal = 0.0;
 
 		double hVal = 0.0;
 
-		Node(Point p) 
+		Node(U p) 
 		{
 			this.coord = p;
 		}
@@ -96,7 +97,7 @@ public class Pathfinder
 		 * -1 if (this.gVal+this.hVal)<(o.gVal+o.hVal)
 		 * @see equals
 		 */
-		public int compareTo(Node o) 
+		public int compareTo(Node<U> o) 
 		{
 			double difference = this.gVal + this.hVal - o.gVal - o.hVal;
 			difference = (Math.abs(difference) < EPSILON) ? 0.0f : difference;
@@ -134,7 +135,7 @@ public class Pathfinder
 	 * Sets the heuristic function. The default is <code>DiagonalNotEqual</code>
 	 * @param heuristic
 	 */
-	public void setHeuristic(IHeuristic heuristic) 
+	public void setHeuristic(IHeuristic<T> heuristic) 
 	{
 		this.heuristic = heuristic;
 	}
@@ -145,10 +146,10 @@ public class Pathfinder
 	 * @param node end node that has to be backtracked
 	 * @return list of the points
 	 */
-	private List<Point> backTrackPath(Node node) 
+	private List<T> backTrackPath(Node<T> node) 
 	{
-		Node traversalNode = node;
-		LinkedList<Point> path = new LinkedList<Point>();
+		Node<T> traversalNode = node;
+		LinkedList<T> path = new LinkedList<T>();
 
 		while (traversalNode != null) 
 		{
@@ -166,15 +167,15 @@ public class Pathfinder
 	 * Gets the list of the points that have been added to the <b>closed</b> list
 	 * @return list of closed points
 	 */
-	public List<Point> getVisitedPoints() 
+	public List<T> getVisitedPoints() 
 	{
 		if (closedNodes!=null)
 		{
-			List<Point> list = new LinkedList<Point>();
-			Enumeration<Point> points = closedNodes.keys();
+			List<T> list = new LinkedList<T>();
+			Enumeration<T> points = closedNodes.keys();
 			while(points.hasMoreElements())
 			{
-				Point p = points.nextElement();
+				T p = points.nextElement();
 				list.add(p);
 			}
 			return list;
@@ -189,11 +190,11 @@ public class Pathfinder
 	 * @param p coordinates of the closed node
 	 * @return g value
 	 */
-	public double getGVal (Point p)
+	public double getGVal (T p)
 	{
 		if (closedNodes!=null)
 		{
-			Node n = closedNodes.get(p);
+			Node<T>n = closedNodes.get(p);
 			if (n!=null)
 			{
 				return n.gVal;
@@ -209,11 +210,11 @@ public class Pathfinder
 	 * @param p coordinates of the closed node
 	 * @return h value
 	 */
-	public double getHVal (Point p)
+	public double getHVal (T p)
 	{
 		if (closedNodes!=null)
 		{
-			Node n = closedNodes.get(p);
+			Node<T>n = closedNodes.get(p);
 			if (n!=null)
 			{
 				return n.hVal;
@@ -229,7 +230,7 @@ public class Pathfinder
 	 * @param start start point of the search
 	 * @param goal goal point of the search
 	 */
-	private double calculateTieBreaker(Point start, Point goal) 
+	private double calculateTieBreaker(T start, T goal) 
 	{
 		//Calculating expected maximum number of moves
 		int maxNumberOfMoves = 4 * (Math.abs(start.x - goal.x) + Math
@@ -246,9 +247,9 @@ public class Pathfinder
 	 * @return list of points that actor must sequentially walk through to reach goal or 
 	 * <b>null</b> if path doesn't exist.
 	 */
-	public List<Point> findPath(IPathHelper helper, Point start, Point goal) 
+	public List<T> findPath(IPathHelper<T> helper, T start, T goal) 
 	{
-		closedNodes = new Hashtable<Point,Node>();
+		closedNodes = new Hashtable<T,Node<T>>();
 		this.helper = helper;
 		long startTime= System.nanoTime();
 		this.steps = 0;
@@ -259,10 +260,10 @@ public class Pathfinder
 			//Set up variables
 			this.start = start;
 			this.goal = goal;
-			openNodes = new PriorityQueue<Node>();			 
+			openNodes = new PriorityQueue<Node<T>>();			 
 			tieBreaker = calculateTieBreaker(start, goal);
 			//Calculating path
-			List<Point> path = calculatePath();
+			List<T> path = calculatePath();
 			
 			elapsedTime = System.nanoTime() - startTime;
 			
@@ -272,7 +273,7 @@ public class Pathfinder
 		{
 			elapsedTime = System.nanoTime() - startTime;
 			// returning empty list
-			return new LinkedList<Point>();
+			return new LinkedList<T>();
 		}
 	}
 
@@ -283,7 +284,7 @@ public class Pathfinder
 	 * @param goal goal point
 	 * @return calculated cost to travel from start to goal
 	 */
-	private double calculateHVal(Point start, Point goal) 
+	private double calculateHVal(T start, T goal) 
 	{
 		return scale * tieBreaker * heuristic.calculateHeuristic(start, goal);
 	}
@@ -292,10 +293,10 @@ public class Pathfinder
 	 * This function calculates the path 
 	 * @return path
 	 */
-	private List<Point> calculatePath() 
+	private List<T> calculatePath() 
 	{		
-		List<Point> path = null;
-		Node startNode = new Node(start);
+		List<T> path = null;
+		Node<T> startNode = new Node<T>(start);
 		startNode.hVal = calculateHVal(start, goal);
 		openNodes.add(startNode);
 
@@ -305,7 +306,7 @@ public class Pathfinder
 
 			this.steps++;
 			//Get the node with the lowest gVal+hVal
-			Node node = openNodes.poll();
+			Node<T> node = openNodes.poll();
 			//Add it to the closed list
 			closedNodes.put(node.coord,node);
 
@@ -313,13 +314,13 @@ public class Pathfinder
 			if (!node.coord.equals(goal)) 
 			{
 				//Get all the neighbours
-				List<Point> neighbours = helper.getNeighbours(node.coord);
+				List<T> neighbours = helper.getNeighbours(node.coord);
 				
 				//For each neighbour
-				for (Point p : neighbours) 
+				for (T p : neighbours) 
 				{
 					//Create neighbour node
-					Node neighbourNode = createNeighbourNode(node, p);
+					Node<T> neighbourNode = createNeighbourNode(node, p);
 					
 					//If coordinates of the neighbour node are the same as the coordinates of the parent node, discard it
 					if (!neighbourNode.coord.equals(node.coord)) 
@@ -350,9 +351,9 @@ public class Pathfinder
 	 * @param neighbourPos position of the neighbour
 	 * @return node
 	 */
-	private Node createNeighbourNode(Node parent, Point neighbourPos) 
+	private Node<T> createNeighbourNode(Node<T> parent, T neighbourPos) 
 	{
-		Node neighbourNode = new Node(neighbourPos);
+		Node<T> neighbourNode = new Node<T>(neighbourPos);
 		neighbourNode.prev = parent;
 		neighbourNode.gVal = parent.gVal + helper.getCost(parent.coord, neighbourNode.coord);
 		neighbourNode.hVal = calculateHVal(neighbourNode.coord, goal);
@@ -365,10 +366,10 @@ public class Pathfinder
 	 * @param node node
 	 * @return true if node is already in the open list
 	 */
-	private boolean checkOpenNodes(Node node) 
+	private boolean checkOpenNodes(Node<T> node) 
 	{
 		boolean ret = false;
-		for (Node oldNode : openNodes) 
+		for (Node<T> oldNode : openNodes) 
 		{
 			if (oldNode.coord.equals(node.coord)) 
 			{
@@ -377,7 +378,7 @@ public class Pathfinder
 				{
 					//Since compareTo and equal compare different fields 
 					//we cannot use remove() method from the PriorityQueue
-					LinkedList<Node> list = new LinkedList<Node>();
+					LinkedList<Node<T>> list = new LinkedList<Node<T>>();
 					list.add(oldNode);
 					openNodes.removeAll(list);
 					openNodes.add(node);

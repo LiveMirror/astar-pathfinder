@@ -31,7 +31,7 @@ import junit.framework.TestCase;
 
 public class PathFinderTest extends TestCase 
 {
-	private class PathHelper implements IPathHelper
+	private class PathHelper implements IPathHelper<Point>
 	{
 		int[][]level;
 		PathHelper(int[][]level)
@@ -61,7 +61,7 @@ public class PathFinderTest extends TestCase
 		}
 	}
 	private static final int NP = 99;
-	Pathfinder finder;
+	Pathfinder<Point> finder;
 //						-----------------------> y
 	static int[][] h1 = {{ 1, 1, 1,NP, 1, 1, 1},	// |
 						 {NP,NP, 1,NP, 1,NP, 1},	// |
@@ -101,7 +101,7 @@ public class PathFinderTest extends TestCase
 		 				 { 9, 9, 2}};
 	public void setUp()
 	{
-		finder = new Pathfinder();		
+		finder = new Pathfinder<Point>();		
 	}
 
 	private void printPath(int[][] map,List<Point> path)
@@ -126,7 +126,7 @@ public class PathFinderTest extends TestCase
 	
 	public void testFindPathInMaze() 
 	{
-		finder.setHeuristic(new DiagonalNotEqual());
+		finder.setHeuristic(new DiagonalNotEqual<Point>());
 		List<Point> points = finder.findPath(new PathHelper(h1), new Point(0,0), new Point(6,6));
 		
 		assertTrue(points.size()==19);
@@ -154,7 +154,7 @@ public class PathFinderTest extends TestCase
 	
 	public void testFindPathDifferentCost() 
 	{
-		finder.setHeuristic(new DiagonalNotEqual());
+		finder.setHeuristic(new DiagonalNotEqual<Point>());
 		List<Point> points = finder.findPath(new PathHelper(h2), new Point(0,0), new Point(6,6));
 		assertTrue(points.size()==8);
 		
@@ -169,7 +169,7 @@ public class PathFinderTest extends TestCase
 	
 	public void testFailedSearch1()
 	{
-		finder.setHeuristic(new DiagonalNotEqual());
+		finder.setHeuristic(new DiagonalNotEqual<Point>());
 		List<Point> points = finder.findPath(new PathHelper(h3), new Point(0,0), new Point(6,6));
 		assertTrue(points==null);
 		//See that finder tried all possible tiles
@@ -180,7 +180,7 @@ public class PathFinderTest extends TestCase
 
 	public void testGetSteps() 
 	{
-		finder.setHeuristic(new DiagonalNotEqual());
+		finder.setHeuristic(new DiagonalNotEqual<Point>());
 		List<Point> points = finder.findPath(new PathHelper(h4), new Point(0,0), new Point(3,3));
 		assertTrue(finder.getSteps()==4);
 		assertTrue(points.size()==3);		
@@ -192,7 +192,7 @@ public class PathFinderTest extends TestCase
 	
 	public void testFailedSearch2()
 	{
-		finder.setHeuristic(new DiagonalNotEqual());
+		finder.setHeuristic(new DiagonalNotEqual<Point>());
 		List<Point> points = finder.findPath(new PathHelper(h5), new Point(0,0), new Point(2,2));
 		assertTrue(points==null);
 		//See that finder tried all possible tiles
@@ -203,7 +203,7 @@ public class PathFinderTest extends TestCase
 	
 	public void testGetGVal()
 	{
-		finder.setHeuristic(new DiagonalNotEqual());
+		finder.setHeuristic(new DiagonalNotEqual<Point>());
 		finder.findPath(new PathHelper(h6), new Point(0,0), new Point(2,2));
 		
 		List<Point> closed = finder.getVisitedPoints();
@@ -217,7 +217,7 @@ public class PathFinderTest extends TestCase
 	
 	public void testGetHVal()
 	{
-		finder.setHeuristic(new DiagonalEqual());
+		finder.setHeuristic(new DiagonalEqual<Point>());
 		finder.findPath(new PathHelper(h6), new Point(0,0), new Point(2,2));
 		
 		double breaker = finder.getTieBreaker();

@@ -30,14 +30,15 @@ import java.awt.Point;
  * square tiles which allow diagonal movements. It assumes that cost of movement
  * is <b>equal</b> in each direction.
  * @author Egor Tsinko
+ * @param <T> type of the point. Must extend java.awt.Point
  */
-public class DiagonalEqual implements IHeuristic 
+public class DiagonalEqual<T extends Point> implements IHeuristic<T>
 {
 
 	/* (non-Javadoc)
 	 * @see pathfinder.heuristics.IHeuristic#calculateHeuristic(java.awt.Point, java.awt.Point)
 	 */
-	public float calculateHeuristic(Point start, Point goal) 
+	public float calculateHeuristic(T start, T goal) 
 	{
 		int horizontal = Math.abs(start.x-goal.x);
 		int vertical = Math.abs(start.y-goal.y);

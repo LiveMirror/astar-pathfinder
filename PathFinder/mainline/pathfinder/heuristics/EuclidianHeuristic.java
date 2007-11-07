@@ -29,14 +29,15 @@ import java.awt.Point;
  * square tiles, but instead support movement in any direction. It calculates 
  * the length of the straight line between <b>start</b> and <b>end</b>
  * @author Egor Tsinko
+ * @param <T> type of the point. Must extend java.awt.Point
  */
-public class EuclidianHeuristic implements IHeuristic 
+public class EuclidianHeuristic<T extends Point> implements IHeuristic<T>
 {
 
 	/* (non-Javadoc)
 	 * @see pathfinder.heuristics.IHeuristic#calculateHeuristic(java.awt.Point, java.awt.Point)
 	 */
-	public float calculateHeuristic(Point start, Point goal) 
+	public float calculateHeuristic(T start, T goal) 
 	{
 		return (float)Math.sqrt(Math.pow(start.x-goal.x, 2)+Math.pow(start.y-goal.y, 2));
 	}

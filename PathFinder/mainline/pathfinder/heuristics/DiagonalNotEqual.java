@@ -30,14 +30,15 @@ import java.awt.Point;
  * diagonal movements is <b>sqrt(2)*COST</b> where COST is the cost of horizontal
  * or vertical movement.
  * @author Egor Tsinko
+ * @param <T> type of the point. Must extend java.awt.Point
  */
-public class DiagonalNotEqual implements IHeuristic 
+public class DiagonalNotEqual<T extends Point> implements IHeuristic<T>
 {
 
 	/* (non-Javadoc)
 	 * @see pathfinder.heuristics.IHeuristic#calculateHeuristic(java.awt.Point, java.awt.Point)
 	 */
-	public float calculateHeuristic(Point start, Point goal) 
+	public float calculateHeuristic(T start, T goal) 
 	{
 		float diagonal = Math.min(Math.abs(start.x-goal.x),Math.abs(start.y-goal.y) );
 		float straight = Math.abs(start.x-goal.x)+Math.abs(start.y-goal.y);

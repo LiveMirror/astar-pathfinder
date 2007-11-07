@@ -27,8 +27,9 @@ import java.util.List;
  * The helper may also contain information about the level and the actor that initiated 
  * search.
  * @author Egor Tsinko
+ * @param <T> type of the point. Must extend java.awt.Point
  */
-public interface IPathHelper 
+public interface IPathHelper<T extends Point> 
 {
 	/**
 	 * Calculates cost of movement from point <b>sourcePoint</b> to point <b>destPoint</b>
@@ -36,12 +37,12 @@ public interface IPathHelper
 	 * @param destPoint destination point
 	 * @return the cost 
 	 */
-	public float getCost(Point sourcePoint, Point destPoint);	
+	public float getCost(T sourcePoint, T destPoint);	
 	
 	/**
 	 * Gets the list of valid points that are possible to travel to from <b>point</b>
 	 * @param point point to get neighbours for
 	 * @return list of neighbour points
 	 */
-	public List<Point> getNeighbours(Point point);
+	public List<T> getNeighbours(T point);
 }
